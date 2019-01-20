@@ -3,22 +3,22 @@ import os
 import os.path
 
 
-IMAGE_DIR = 'images'
+IMAGE_DIR = 'SR_training_datasets/T91'
 SAVE_DIR = 'dataset'
-IMG_SIZE = 256
-LOW_RES = 128
+IMG_SIZE = 127
+LOW_RES = 63
 
 
 images = os.listdir(IMAGE_DIR)
-
+counter = 1
 for image in images:
     img_path = os.path.join(IMAGE_DIR, image)
     img = Image.open(img_path)
     width, height = img.size
-    for i in range(width // IMG_SIZE - 1):
-        for j in range(height // IMG_SIZE - 1):
-            ref_img = img.crop((i*IMG_SIZE, j*IMG_SIZE,
-                (i+1)*IMG_SIZE, (j+1)*IMG_SIZE))
+    for i in range(0, width-IMG_SIZE, 50):
+        for j in range(0, height-IMG_SIZE, 50):
+            ref_img = img.crop((i, j,
+                i + IMG_SIZE, j + IMG_SIZE))
             resized_img = ref_img.resize(
                 (LOW_RES, LOW_RES))
             bicubic_img = resized_img.resize(
@@ -32,5 +32,8 @@ for image in images:
             ref_path = os.path.join(SAVE_DIR, 'reference', crop_name)
             ref_img.save(ref_path)
             bicubic_img.save(bicubic_path)
+    
+    print('[%i] Croped image: %s' % (counter, image))
+    counter = counter + 1
             
             
